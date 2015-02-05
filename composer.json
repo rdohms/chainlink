@@ -1,0 +1,12 @@
+{
+    "name": "symbid/chainlink",
+    "description": "Chainlink offers a drop in implementation of the Chain of Responsibility implementation.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rafael Dohms",
+            "email": "rdohms@gmail.com"
+        }
+    ],
+    "require": {}
+}
