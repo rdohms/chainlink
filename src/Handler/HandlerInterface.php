@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Symbid\Chainlink\Handler;
-
 
 interface HandlerInterface
 {
