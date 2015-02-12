@@ -2,6 +2,12 @@
 
 namespace Symbid\Chainlink\Handler;
 
+/**
+ * Interface HandlerInterface
+ * Describes a Handler.
+ *
+ * @package Symbid\Chainlink\Handler
+ */
 interface HandlerInterface
 {
 

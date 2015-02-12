@@ -37,6 +37,9 @@ To use chainlink, all you need to do is implement the `HandlerInterface` on your
     // You can also get the handler as a return value
     $handler = $context->getHandlerFor($input);
     
+    // You may have need of returning multiple handlers
+    $handler = $context->getAllHandlersFor($input);
+    
 ```
 
 Its the handler's responsibility to identify which input it is responsible for, the interface contains a `handles` method that is called for that.

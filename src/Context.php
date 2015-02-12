@@ -4,6 +4,12 @@ namespace Symbid\Chainlink;
 
 use Symbid\Chainlink\Handler\HandlerInterface;
 
+/**
+ * Class Context
+ * Holds a list of handlers and can find the one responsible to handle a given input
+ *
+ * @package Symbid\Chainlink
+ */
 class Context
 {
 
@@ -18,7 +24,7 @@ class Context
      */
     public function addHandler(HandlerInterface $handler)
     {
-        if (in_array($handler, $this->handlers)) {
+        if (in_array($handler, $this->handlers, true)) {
             return;
         }
 
@@ -26,13 +32,26 @@ class Context
     }
 
     /**
-     * Gets handler compatible with this input
+     * Gets a single (first) handler compatible with this input
      *
      * @param mixed $input
      * @return HandlerInterface
      * @throws NoHandlerException
      */
     public function getHandlerFor($input)
+    {
+        $allHandlers = $this->getAllHandlersFor($input);
+        return array_shift($allHandlers);
+    }
+
+    /**
+     * Retrieves all the handlers the can handle this input
+     *
+     * @param mixed $input
+     * @return HandlerInterface[]
+     * @throws NoHandlerException
+     */
+    public function getAllHandlersFor($input)
     {
         $compatibleHandlers = array_filter(
             $this->handlers,
@@ -45,7 +64,7 @@ class Context
             throw NoHandlerException::notFound();
         }
 
-        return array_shift($compatibleHandlers);
+        return $compatibleHandlers;
     }
 
     /**
