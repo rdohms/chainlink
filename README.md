@@ -19,7 +19,7 @@ If you use Symfony or other frameworks, check [Packagist](http://pacakgist.org/v
 To use chainlink, all you need to do is implement the `HandlerInterface` on your handlers and register them with a context.
 
 ```php
-<?
+<?php
     class MyHandler implements HandlerInterface
     {
         // ... fulfill interface ...
