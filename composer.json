@@ -1,7 +1,13 @@
 {
     "name": "symbid/chainlink",
     "description": "Chainlink offers a drop in implementation of the Chain of Responsibility implementation.",
+    "homepage": "https://github.com/Symbid/chainlink",
     "license": "MIT",
+    "keywords": [
+      "chain of responsibility",
+      "symbid",
+      "handler"
+    ],
     "authors": [
         {
             "name": "Rafael Dohms",
@@ -10,7 +16,12 @@
     ],
     "autoload": {
       "psr-4": {
-        "Symbid\\Chainlink\\": ["src/", "tests/"]
+        "Symbid\\Chainlink\\": "src/"
+      }
+    },
+    "autoload-dev": {
+      "psr-4": {
+        "Symbid\\Chainlink\\": "tests/"
       }
     },
     "require-dev": {
