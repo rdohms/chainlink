@@ -3,7 +3,6 @@
 namespace Symbid\Chainlink;
 
 use Mockery\MockInterface;
-use Symbid\Chainlink\Handler\HandlerInterface;
 
 class ContextTest extends \PHPUnit_Framework_TestCase
 {
@@ -24,7 +23,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
 
     public function testAddHandler()
     {
-        $handler = \Mockery::mock(HandlerInterface::class);
+        $handler = \Mockery::mock('Symbid\Chainlink\Handler\HandlerInterface');
 
         $this->target->addHandler($handler);
 
@@ -100,11 +99,11 @@ class ContextTest extends \PHPUnit_Framework_TestCase
      */
     public function buildHandlers($one, $two, $three, $input)
     {
-        $handler1 = \Mockery::mock(HandlerInterface::class);
+        $handler1 = \Mockery::mock('Symbid\Chainlink\Handler\HandlerInterface');
         $handler1->shouldReceive('handles')->with($input)->andReturn($one);
-        $handler2 = \Mockery::mock(HandlerInterface::class);
+        $handler2 = \Mockery::mock('Symbid\Chainlink\Handler\HandlerInterface');
         $handler2->shouldReceive('handles')->with($input)->andReturn($two);
-        $handler3 = \Mockery::mock(HandlerInterface::class);
+        $handler3 = \Mockery::mock('Symbid\Chainlink\Handler\HandlerInterface');
         $handler3->shouldReceive('handles')->with($input)->andReturn($three);
 
         $this->target->addHandler($handler1);
