@@ -19,7 +19,7 @@ If you only need the chain implementation, get chainlink by running:
 composer require symbid/chainlink
 ```
 
-If you use Symfony or other frameworks, check [Packagist](http://pacakgist.org/vendor/symbid) for wrappers and adapters.
+If you use Symfony or other frameworks, check [Packagist](http://packagist.org/packages/symbid/) for wrappers and adapters.
 
 ## Usage
 
