@@ -2,6 +2,7 @@
 
 namespace Symbid\Chainlink;
 
+use InvalidArgumentException;
 use Symbid\Chainlink\Handler\HandlerInterface;
 
 /**
@@ -19,16 +20,55 @@ class Context
     protected $handlers = [];
 
     /**
-     * Registers a new handler in the list
-     * @param HandlerInterface $handler
+     * @var array of handlers prefixed with their priority
      */
-    public function addHandler(HandlerInterface $handler)
+    protected $unsortedHandlers = [];
+
+    /**
+     * Registers a new handler in the list
+     *
+     * @param HandlerInterface $handler
+     * @param int $priority
+     * @throws InvalidArgumentException
+     */
+    public function addHandler(HandlerInterface $handler, $priority = 0)
     {
+        // make sure priority is an actual number
+        if (filter_var($priority, FILTER_VALIDATE_INT) === false) {
+            throw new InvalidArgumentException("Argument 'priority' should be an integer, got '$priority'");
+        }
+
+        // don't add the same handler twice
         if (in_array($handler, $this->handlers, true)) {
             return;
         }
 
-        $this->handlers[] = $handler;
+        // make sure we don't overwrite existing handlers
+        $this->unsortedHandlers[$priority][] = $handler;
+
+        $this->handlers = $this->sortHandlers($this->unsortedHandlers);
+    }
+
+    /**
+     * Sort an array of arrays, where the index key is the priority so we support multiple handlers for 1 priority.
+     * This ensures that we adhere to FIFO
+     *
+     * @param $unsortedHandlers
+     * @return array
+     */
+    private function sortHandlers(array $unsortedHandlers)
+    {
+        $handlers = [];
+
+        // sort handlers by priority high to low
+        krsort($unsortedHandlers);
+
+        // turn the sorted handlers into 1 array
+        foreach ($unsortedHandlers as $priorityArray) {
+            $handlers = array_merge($handlers, $priorityArray);
+        }
+
+        return $handlers;
     }
 
     /**
@@ -45,7 +85,7 @@ class Context
     }
 
     /**
-     * Retrieves all the handlers the can handle this input
+     * Retrieves all the handlers that can handle this input
      *
      * @param mixed $input
      * @return HandlerInterface[]

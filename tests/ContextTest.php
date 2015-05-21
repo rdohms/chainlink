@@ -3,6 +3,7 @@
 namespace Symbid\Chainlink;
 
 use Mockery\MockInterface;
+use InvalidArgumentException;
 
 class ContextTest extends \PHPUnit_Framework_TestCase
 {
@@ -37,6 +38,61 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $this->target->addHandler($handler);
 
         $this->assertCount(1, $registeredHandlers);
+    }
+
+    public function testAddHandlerWithPriority()
+    {
+        $handler1 = \Mockery::mock('testClass1', 'Symbid\Chainlink\Handler\HandlerInterface');
+        $handler2 = \Mockery::mock('testClass2', 'Symbid\Chainlink\Handler\HandlerInterface');
+        $handler3 = \Mockery::mock('testClass3', 'Symbid\Chainlink\Handler\HandlerInterface');
+        $handler4 = \Mockery::mock('testClass4', 'Symbid\Chainlink\Handler\HandlerInterface');
+        $this->target->addHandler($handler1);
+        $this->target->addHandler($handler2, 9000);
+        $this->target->addHandler($handler3, 100);
+        $this->target->addHandler($handler4);
+
+        $property = new \ReflectionProperty($this->target, 'handlers');
+        $property->setAccessible(true);
+        $registeredHandlers = $property->getValue($this->target);
+        $this->assertInstanceOf('testClass2', $registeredHandlers[0]);
+        $this->assertInstanceOf('testClass3', $registeredHandlers[1]);
+        $this->assertInstanceOf('testClass1', $registeredHandlers[2]);
+        $this->assertInstanceOf('testClass4', $registeredHandlers[3]);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @dataProvider nanProvider
+     */
+    public function testAddHandlerWithInvalidPriority($nan)
+    {
+        $handler = \Mockery::mock('Symbid\Chainlink\Handler\HandlerInterface');
+
+        $this->target->addHandler($handler, $nan);
+    }
+
+    public function nanProvider()
+    {
+        return [
+            ['asdf'],
+            ['0x'],
+            ['12345asdf'],
+            ['-e']
+        ];
+    }
+
+    public function testHandlerSorting()
+    {
+        $input = [
+            10 => ['bar', 'baz'],
+            100 => ['foo'],
+            1 => ['quux']
+        ];
+        $expectedOutput = ['foo', 'bar', 'baz', 'quux'];
+        $method = new \ReflectionMethod($this->target, 'sortHandlers');
+        $method->setAccessible(true);
+        $output = $method->invoke($this->target, $input);
+        $this->assertSame($expectedOutput, $output);
     }
 
     public function testGetHandlerFor()
