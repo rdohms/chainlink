@@ -48,3 +48,20 @@ $handler = $context->getAllHandlersFor($input);
 ```
 
 Its the handler's responsibility to identify which input it is responsible for, the interface contains a `handles` method that is called for that.
+
+## Order of Chain handling
+
+Sometimes it's useful to influence which handler gets called first. `addHandler` supports an optional second parameter with a priority integer. The highest number in the chain will be called first.
+
+```php
+// Create a Context to chain responsibilities
+$context = new Symbid\Chainlink\Context();
+$context->addHandler($handler1, 10);
+$context->addHandler($handler2, 1000);
+$context->addHandler($handler3);
+
+// Pass in an item to be handled
+$context->handle($input);
+```
+
+The following handlers will be called in order (provided they can handle the usecase) `$handler2 -> $handler1 -> $handler3`
