@@ -26,27 +26,25 @@ If you use Symfony or other frameworks, check [Packagist](http://packagist.org/p
 To use chainlink, all you need to do is implement the `HandlerInterface` on your handlers and register them with a context.
 
 ```php
-<?php
-    class MyHandler implements HandlerInterface
-    {
-        // ... fulfill interface ...
-    }
-    
-    $handler = new MyHandler();
-    
-    // Create a Context to chain responsibilities
-    $context = new Symbid\Chainlink\Context();
-    $context->addHandler($handler);
-    
-    // Pass in an item to be handled
-    $context->handle($input);
-    
-    // You can also get the handler as a return value
-    $handler = $context->getHandlerFor($input);
-    
-    // You may have need of returning multiple handlers
-    $handler = $context->getAllHandlersFor($input);
-    
+class MyHandler implements HandlerInterface
+{
+    // ... fulfill interface ...
+}
+
+$handler = new MyHandler();
+
+// Create a Context to chain responsibilities
+$context = new Symbid\Chainlink\Context();
+$context->addHandler($handler);
+
+// Pass in an item to be handled
+$context->handle($input);
+
+// You can also get the handler as a return value
+$handler = $context->getHandlerFor($input);
+
+// You may have need of returning multiple handlers
+$handler = $context->getAllHandlersFor($input);
 ```
 
 Its the handler's responsibility to identify which input it is responsible for, the interface contains a `handles` method that is called for that.
