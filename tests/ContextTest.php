@@ -43,21 +43,25 @@ class ContextTest extends \PHPUnit_Framework_TestCase
     public function testAddHandlerWithPriority()
     {
         $handler1 = \Mockery::mock('testClass1', 'Symbid\Chainlink\Handler\HandlerInterface');
+        $handler1->shouldReceive('handles')->andReturn(true);
         $handler2 = \Mockery::mock('testClass2', 'Symbid\Chainlink\Handler\HandlerInterface');
+        $handler2->shouldReceive('handles')->andReturn(true);
         $handler3 = \Mockery::mock('testClass3', 'Symbid\Chainlink\Handler\HandlerInterface');
+        $handler3->shouldReceive('handles')->andReturn(true);
         $handler4 = \Mockery::mock('testClass4', 'Symbid\Chainlink\Handler\HandlerInterface');
+        $handler4->shouldReceive('handles')->andReturn(true);
+
         $this->target->addHandler($handler1);
         $this->target->addHandler($handler2, 9000);
         $this->target->addHandler($handler3, 100);
         $this->target->addHandler($handler4);
 
-        $property = new \ReflectionProperty($this->target, 'handlers');
-        $property->setAccessible(true);
-        $registeredHandlers = $property->getValue($this->target);
-        $this->assertInstanceOf('testClass2', $registeredHandlers[0]);
-        $this->assertInstanceOf('testClass3', $registeredHandlers[1]);
-        $this->assertInstanceOf('testClass1', $registeredHandlers[2]);
-        $this->assertInstanceOf('testClass4', $registeredHandlers[3]);
+        $handlers = $this->target->getAllHandlersFor(new \stdClass());
+
+        $this->assertInstanceOf('testClass2', $handlers[0]);
+        $this->assertInstanceOf('testClass3', $handlers[1]);
+        $this->assertInstanceOf('testClass1', $handlers[2]);
+        $this->assertInstanceOf('testClass4', $handlers[3]);
     }
 
     /**
@@ -81,25 +85,12 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    public function testHandlerSorting()
-    {
-        $input = [
-            10 => ['bar', 'baz'],
-            100 => ['foo'],
-            1 => ['quux']
-        ];
-        $expectedOutput = ['foo', 'bar', 'baz', 'quux'];
-        $method = new \ReflectionMethod($this->target, 'sortHandlers');
-        $method->setAccessible(true);
-        $output = $method->invoke($this->target, $input);
-        $this->assertSame($expectedOutput, $output);
-    }
-
     public function testGetHandlerFor()
     {
         $input = new \stdClass();
 
         $handlers = $this->buildHandlers(false, true, false, $input);
+        $this->assignMultipleHandlers($handlers);
 
         $handler = $this->target->getHandlerFor($input);
 
@@ -113,6 +104,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $return = uniqid();
 
         $handlers = $this->buildHandlers(false, true, false, $input);
+        $this->assignMultipleHandlers($handlers);
         $handlers[1]->shouldReceive('handle')->with($input)->andReturn($return);
         $handlers[0]->shouldReceive('handle')->never();
         $handlers[2]->shouldReceive('handle')->never();
@@ -125,6 +117,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $input = new \stdClass();
 
         $handlers = $this->buildHandlers(false, true, true, $input);
+        $this->assignMultipleHandlers($handlers);
 
         $returnHandlers = $this->target->getAllHandlersFor($input);
 
@@ -142,6 +135,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $input = new \stdClass();
 
         $handlers = $this->buildHandlers(false, false, false, $input);
+        $this->assignMultipleHandlers($handlers);
 
         $returnHandlers = $this->target->getAllHandlersFor($input);
     }
@@ -162,10 +156,16 @@ class ContextTest extends \PHPUnit_Framework_TestCase
         $handler3 = \Mockery::mock('Symbid\Chainlink\Handler\HandlerInterface');
         $handler3->shouldReceive('handles')->with($input)->andReturn($three);
 
-        $this->target->addHandler($handler1);
-        $this->target->addHandler($handler2);
-        $this->target->addHandler($handler3);
-
         return [$handler1, $handler2, $handler3];
+    }
+
+    /**
+     * @param $handlers
+     */
+    public function assignMultipleHandlers($handlers)
+    {
+        foreach ($handlers as $handler) {
+            $this->target->addHandler($handler);
+        }
     }
 }

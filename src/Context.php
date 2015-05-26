@@ -20,55 +20,36 @@ class Context
     protected $handlers = [];
 
     /**
-     * @var array of handlers prefixed with their priority
-     */
-    protected $unsortedHandlers = [];
-
-    /**
      * Registers a new handler in the list
      *
      * @param HandlerInterface $handler
-     * @param int $priority
+     * @param int $priority the higher the number the higher the priority
      * @throws InvalidArgumentException
      */
     public function addHandler(HandlerInterface $handler, $priority = 0)
     {
-        // make sure priority is an actual number
         if (filter_var($priority, FILTER_VALIDATE_INT) === false) {
             throw new InvalidArgumentException("Argument 'priority' should be an integer, got '$priority'");
         }
 
-        // don't add the same handler twice
-        if (in_array($handler, $this->handlers, true)) {
+        if ($this->handlerAlreadyRegistered($handler)) {
             return;
         }
 
-        // make sure we don't overwrite existing handlers
-        $this->unsortedHandlers[$priority][] = $handler;
+        $this->handlers[$priority][] = $handler;
 
-        $this->handlers = $this->sortHandlers($this->unsortedHandlers);
+        $this->sortHandlers();
     }
 
     /**
-     * Sort an array of arrays, where the index key is the priority so we support multiple handlers for 1 priority.
-     * This ensures that we adhere to FIFO
+     * Sorts the priority list but leaves the original insertion order for clashes untouched.
+     * This ensures that we adhere to FIFO within each priority level.
      *
-     * @param $unsortedHandlers
-     * @return array
+     * Priority is sorted from HIGH to LOW
      */
-    private function sortHandlers(array $unsortedHandlers)
+    protected function sortHandlers()
     {
-        $handlers = [];
-
-        // sort handlers by priority high to low
-        krsort($unsortedHandlers);
-
-        // turn the sorted handlers into 1 array
-        foreach ($unsortedHandlers as $priorityArray) {
-            $handlers = array_merge($handlers, $priorityArray);
-        }
-
-        return $handlers;
+        krsort($this->handlers);
     }
 
     /**
@@ -93,12 +74,16 @@ class Context
      */
     public function getAllHandlersFor($input)
     {
-        $compatibleHandlers = array_filter(
-            $this->handlers,
+        $this->sortHandlers();
+
+        $filteredIterator = new \CallbackFilterIterator(
+            $this->getHandlerIterator(),
             function (HandlerInterface $handler) use ($input) {
                 return $handler->handles($input);
             }
         );
+
+        $compatibleHandlers = iterator_to_array($filteredIterator, false);
 
         if (empty($compatibleHandlers)) {
             throw NoHandlerException::notFound();
@@ -117,5 +102,35 @@ class Context
     public function handle($input)
     {
         return $this->getHandlerFor($input)->handle($input);
+    }
+
+    /**
+     * Checks if handler is already registered
+     *
+     * @param HandlerInterface $handler
+     * @return bool
+     */
+    public function handlerAlreadyRegistered(HandlerInterface $handler)
+    {
+        foreach ($this->getHandlerIterator() as $registeredHandler) {
+            if ($registeredHandler === $handler) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Sets up and returns a recursive handler iterator.
+     *
+     * @return \RecursiveIteratorIterator
+     */
+    protected function getHandlerIterator()
+    {
+        return new \RecursiveIteratorIterator(
+            new \RecursiveArrayIterator($this->handlers, \RecursiveArrayIterator::CHILD_ARRAYS_ONLY),
+            \RecursiveIteratorIterator::LEAVES_ONLY
+        );
     }
 }
