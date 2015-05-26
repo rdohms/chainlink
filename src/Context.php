@@ -37,8 +37,6 @@ class Context
         }
 
         $this->handlers[$priority][] = $handler;
-
-        $this->sortHandlers();
     }
 
     /**
