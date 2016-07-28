@@ -1,12 +1,12 @@
 <?php
 
-namespace Symbid\Chainlink;
+namespace DMS\Chainlink;
 
 /**
  * Class NoHandlerException
  * Thrown when a Handler is not found to handle a given input.
  *
- * @package Symbid\Chainlink
+ * @package DMS\Chainlink
  */
 class NoHandlerException extends \Exception
 {

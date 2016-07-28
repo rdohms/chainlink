@@ -1,12 +1,12 @@
 <?php
 
-namespace Symbid\Chainlink\Handler;
+namespace DMS\Chainlink\Handler;
 
 /**
  * Interface HandlerInterface
  * Describes a Handler.
  *
- * @package Symbid\Chainlink\Handler
+ * @package DMS\Chainlink\Handler
  */
 interface HandlerInterface
 {

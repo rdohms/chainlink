@@ -1,11 +1,11 @@
-# Symbid Chainlink
+# DMS Chainlink
 
-[![Latest Version](https://img.shields.io/github/release/symbid/chainlink.svg?style=flat-square)](https://github.com/Symbid/chainlink/releases)
+[![Latest Version](https://img.shields.io/github/release/rdohms/chainlink.svg?style=flat-square)](https://github.com/rdohms/chainlink/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
-[![Build Status](https://img.shields.io/travis/Symbid/chainlink/master.svg?style=flat-square)](https://travis-ci.org/symbid/chainlink)
-[![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/Symbid/chainlink.svg?style=flat-square)](https://scrutinizer-ci.com/g/symbid/chainlink/code-structure)
-[![Quality Score](https://img.shields.io/scrutinizer/g/Symbid/chainlink.svg?style=flat-square)](https://scrutinizer-ci.com/g/symbid/chainlink)
-[![Total Downloads](https://img.shields.io/packagist/dt/symbid/chainlink.svg?style=flat-square)](https://packagist.org/packages/symbid/chainlink)
+[![Build Status](https://img.shields.io/travis/rdohms/chainlink/master.svg?style=flat-square)](https://travis-ci.org/rdohms/chainlink)
+[![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/rdohms/chainlink.svg?style=flat-square)](https://scrutinizer-ci.com/g/rdohms/chainlink/code-structure)
+[![Quality Score](https://img.shields.io/scrutinizer/g/rdohms/chainlink.svg?style=flat-square)](https://scrutinizer-ci.com/g/rdohms/chainlink)
+[![Total Downloads](https://img.shields.io/packagist/dt/rdohms/chainlink.svg?style=flat-square)](https://packagist.org/packages/rdohms/chainlink)
 
 Chainlink is a drop in implementation of the Chain of Responsibility pattern. Its a very simple library that helps you avoid boiler plate code in order to provide a chain of responsibility to handle a particular task.
 
@@ -16,10 +16,10 @@ Chainlink library has been split so that the Context, the class that implements 
 If you only need the chain implementation, get chainlink by running:
 
 ```sh
-composer require symbid/chainlink
+composer require dms/chainlink
 ```
 
-If you use Symfony or other frameworks, check [Packagist](http://packagist.org/packages/symbid/) for wrappers and adapters.
+If you use Symfony or other frameworks, check [Packagist](http://packagist.org/packages/dms/) for wrappers and adapters.
 
 ## Usage
 
@@ -34,7 +34,7 @@ class MyHandler implements HandlerInterface
 $handler = new MyHandler();
 
 // Create a Context to chain responsibilities
-$context = new Symbid\Chainlink\Context();
+$context = new DMS\Chainlink\Context();
 $context->addHandler($handler);
 
 // Pass in an item to be handled
@@ -55,7 +55,7 @@ Sometimes it's useful to influence which handler gets called first. `addHandler`
 
 ```php
 // Create a Context to chain responsibilities
-$context = new Symbid\Chainlink\Context();
+$context = new DMS\Chainlink\Context();
 $context->addHandler($handler1, 10);
 $context->addHandler($handler2, 1000);
 $context->addHandler($handler3);

@@ -1,15 +1,15 @@
 <?php
 
-namespace Symbid\Chainlink;
+namespace DMS\Chainlink;
 
 use InvalidArgumentException;
-use Symbid\Chainlink\Handler\HandlerInterface;
+use DMS\Chainlink\Handler\HandlerInterface;
 
 /**
  * Class Context
  * Holds a list of handlers and can find the one responsible to handle a given input
  *
- * @package Symbid\Chainlink
+ * @package DMS\Chainlink
  */
 class Context
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Symbid\Chainlink;
+namespace DMS\Chainlink;
 
 use Mockery\MockInterface;
 use InvalidArgumentException;
@@ -24,7 +24,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
 
     public function testAddHandler()
     {
-        $handler = \Mockery::mock('Symbid\Chainlink\Handler\HandlerInterface');
+        $handler = \Mockery::mock('DMS\Chainlink\Handler\HandlerInterface');
 
         $this->target->addHandler($handler);
 
@@ -42,13 +42,13 @@ class ContextTest extends \PHPUnit_Framework_TestCase
 
     public function testAddHandlerWithPriority()
     {
-        $handler1 = \Mockery::mock('testClass1', 'Symbid\Chainlink\Handler\HandlerInterface');
+        $handler1 = \Mockery::mock('testClass1', 'DMS\Chainlink\Handler\HandlerInterface');
         $handler1->shouldReceive('handles')->andReturn(true);
-        $handler2 = \Mockery::mock('testClass2', 'Symbid\Chainlink\Handler\HandlerInterface');
+        $handler2 = \Mockery::mock('testClass2', 'DMS\Chainlink\Handler\HandlerInterface');
         $handler2->shouldReceive('handles')->andReturn(true);
-        $handler3 = \Mockery::mock('testClass3', 'Symbid\Chainlink\Handler\HandlerInterface');
+        $handler3 = \Mockery::mock('testClass3', 'DMS\Chainlink\Handler\HandlerInterface');
         $handler3->shouldReceive('handles')->andReturn(true);
-        $handler4 = \Mockery::mock('testClass4', 'Symbid\Chainlink\Handler\HandlerInterface');
+        $handler4 = \Mockery::mock('testClass4', 'DMS\Chainlink\Handler\HandlerInterface');
         $handler4->shouldReceive('handles')->andReturn(true);
 
         $this->target->addHandler($handler1);
@@ -70,7 +70,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddHandlerWithInvalidPriority($nan)
     {
-        $handler = \Mockery::mock('Symbid\Chainlink\Handler\HandlerInterface');
+        $handler = \Mockery::mock('DMS\Chainlink\Handler\HandlerInterface');
 
         $this->target->addHandler($handler, $nan);
     }
@@ -128,7 +128,7 @@ class ContextTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @throws NoHandlerException
-     * @expectedException \Symbid\Chainlink\NoHandlerException
+     * @expectedException \DMS\Chainlink\NoHandlerException
      */
     public function testGetAllHandlersForWithNoCompatibleHandler()
     {
@@ -149,11 +149,11 @@ class ContextTest extends \PHPUnit_Framework_TestCase
      */
     public function buildHandlers($one, $two, $three, $input)
     {
-        $handler1 = \Mockery::mock('Symbid\Chainlink\Handler\HandlerInterface');
+        $handler1 = \Mockery::mock('DMS\Chainlink\Handler\HandlerInterface');
         $handler1->shouldReceive('handles')->with($input)->andReturn($one);
-        $handler2 = \Mockery::mock('Symbid\Chainlink\Handler\HandlerInterface');
+        $handler2 = \Mockery::mock('DMS\Chainlink\Handler\HandlerInterface');
         $handler2->shouldReceive('handles')->with($input)->andReturn($two);
-        $handler3 = \Mockery::mock('Symbid\Chainlink\Handler\HandlerInterface');
+        $handler3 = \Mockery::mock('DMS\Chainlink\Handler\HandlerInterface');
         $handler3->shouldReceive('handles')->with($input)->andReturn($three);
 
         return [$handler1, $handler2, $handler3];

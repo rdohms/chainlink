@@ -10,7 +10,7 @@
          processIsolation="false"
          stopOnFailure="false">
     <testsuites>
-        <testsuite name="Symbid Test Suite">
+        <testsuite name="DMS Test Suite">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
